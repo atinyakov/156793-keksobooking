@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Андрей Тиняков](https://up.htmlacademy.ru/javascript/11/user/156793).
-* Наставник: `Неизвестно`.
+* Наставник: `Жека Лепёшкин`.
 
 ---
 
