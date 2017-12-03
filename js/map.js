@@ -39,6 +39,8 @@ var FEATURES_LIST = [
 ];
 
 var OFFERS_AMOUNT = 8;
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 var offerList = [];
 // generates random number
 var randomInteger = function (min, max) {
@@ -95,20 +97,78 @@ var fillOfferList = function () {
   }
 };
 fillOfferList();
+var item = document.querySelector('.map');
+var elem = document.querySelector('.map__pins');
+var form = document.querySelector('.notice__form');
+var fieldset = document.querySelectorAll('fieldset');
 
-var item;
-var removeMapClass = function () {
-  item = document.querySelector('.map');
-  item.classList.remove('map--faded');
+// make fieldset inactive on start
+for (var j = 0; j < fieldset.length; j++) {
+  fieldset[j].setAttribute('disabled', 'disabled');
+}
+
+var onPageTemplate = document.querySelector('template').content;
+onPageTemplate.querySelector('.popup__features').innerHTML = '';
+var article = onPageTemplate.querySelector('article');
+
+var removeActive = function () {
+  var pins = elem.querySelectorAll('button');
+  for (var index = 0; index < pins.length; index++) {
+    pins[index].classList.remove('map__pin--active');
+  }
 };
 
-var elem = document.querySelector('.map__pins');
+var hideArticle = function () {
+  var removePopup = document.querySelector('.map__card');
+  if (removePopup !== null) {
+    item.removeChild(removePopup);
+  }
+};
+var renderArticle = function (offerVariable) {
+  var mapElement = article.cloneNode(true);
+  var paragraph = mapElement.querySelectorAll('p');
+  mapElement.querySelector('h3').textContent = offerVariable.offer.title;
+  paragraph[0].textContent = offerVariable.offer.address;
+  mapElement.querySelector('.popup__price').textContent = offerVariable.offer.price + ' \u20bd/ за ночь';
+  mapElement.querySelector('h4').textContent = OFFER_TYPES_RUS[OFFER_TYPES.indexOf(offerVariable.offer.type)];
+  paragraph[2].textContent = offerVariable.offer.rooms + ' для ' + offerVariable.offer.guests + ' гостей';
+  paragraph[3].textContent = 'Заезд после ' + offerVariable.offer.checkin + ' , выезд до ' + offerVariable.offer.checkout;
+  getFeaturesList(offerVariable.offer.features);
+  paragraph[4].textContent = offerVariable.offer.description;
+  mapElement.querySelector('.popup__avatar').setAttribute('src', offerVariable.author.avatar);
+  var closePopup = mapElement.querySelector('.popup__close');
+  closePopup.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      removeActive();
+      hideArticle();
+    }
+  });
+  closePopup.addEventListener('click', function () {
+    closePopup.autofocus = false;
+    removeActive();
+    hideArticle();
+  });
+  closePopup.tabindex = '0';
+  item.appendChild(mapElement);
+};
 
 var offerContstructor = function (obj, i) {
   var offerPin = document.createElement('BUTTON');
   offerPin.className = 'map__pin';
   offerPin.style.left = '' + obj[i].location.x + 'px';
   offerPin.style.top = '' + obj[i].location.y + 'px';
+  offerPin.addEventListener('click', function () {
+    removeActive();
+    hideArticle();
+    offerPin.classList.add('map__pin--active');
+    renderArticle(obj[i]);
+  });
+  offerPin.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      removeActive();
+      hideArticle();
+    }
+  });
   var image = document.createElement('img');
   image.style.width = '40px';
   image.style.height = '40px';
@@ -125,15 +185,10 @@ var createFragment = function () {
   }
   elem.appendChild(fragment);
 };
-createFragment();
-
-var template = document.querySelector('template').content;
-template.querySelector('.popup__features').innerHTML = '';
-var mapElement = template.cloneNode(true);
-var paragraph = mapElement.querySelectorAll('p');
 
 var getFeaturesList = function (featrs) {
-  var ulElement = mapElement.querySelector('.popup__features');
+  var mapItem = onPageTemplate.cloneNode(true);
+  var ulElement = mapItem.querySelector('.popup__features');
   var liFragment = document.createDocumentFragment();
   for (var i = 0; i <= featrs.length - 1; i++) {
     var newElement = document.createElement('li');
@@ -142,18 +197,20 @@ var getFeaturesList = function (featrs) {
   }
   ulElement.appendChild(liFragment);
 };
-
-removeMapClass();
-var renderArticle = function (offerVariable) {
-  mapElement.querySelector('h3').textContent = offerVariable.offer.title;
-  paragraph[0].textContent = offerVariable.offer.address;
-  mapElement.querySelector('.popup__price').textContent = offerVariable.offer.price + ' \u20bd/ за ночь';
-  mapElement.querySelector('h4').textContent = OFFER_TYPES_RUS[OFFER_TYPES.indexOf(offerVariable.offer.type)];
-  paragraph[2].textContent = offerVariable.offer.rooms + ' для ' + offerVariable.offer.guests + ' гостей';
-  paragraph[3].textContent = 'Заезд после ' + offerVariable.offer.checkin + ' , выезд до ' + offerVariable.offer.checkout;
-  getFeaturesList(offerVariable.offer.features);
-  paragraph[4].textContent = offerVariable.offer.description;
-  mapElement.querySelector('.popup__avatar').setAttribute('src', offerVariable.author.avatar);
-  item.appendChild(mapElement);
+// enable form on mouse remove
+var mouseAction = item.querySelector('.map__pin--main');
+var startForm = function () {
+  form.classList.remove('notice__form--disabled');
+  item.classList.remove('map--faded');
+  createFragment();
+  for (var k = 0; k < fieldset.length; k++) {
+    fieldset[k].removeAttribute('disabled', 'disabled');
+  }
 };
-renderArticle(offerList[0]);
+
+mouseAction.addEventListener('mouseup', startForm);
+mouseAction.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    startForm();
+  }
+});
