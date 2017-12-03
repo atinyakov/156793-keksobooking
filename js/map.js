@@ -90,7 +90,7 @@ var offerTemplate = function () {
 };
 
 var fillOfferList = function () {
-  for (var i = 0; i <= randomInteger(1, OFFERS_AMOUNT); i++) {
+  for (var i = 0; i <= 8; i++) {
     offerList.push(offerTemplate());
   }
 };
