@@ -37,6 +37,8 @@ var FEATURES_LIST = [
   'elevator',
   'conditioner'
 ];
+
+var OFFERS_AMOUNT = 8;
 var offerList = [];
 // generates random number
 var randomInteger = function (min, max) {
@@ -88,7 +90,7 @@ var offerTemplate = function () {
 };
 
 var fillOfferList = function () {
-  for (var i = 0; i <= randomInteger(1, 8); i++) {
+  for (var i = 0; i <= randomInteger(1, OFFERS_AMOUNT); i++) {
     offerList.push(offerTemplate());
   }
 };
