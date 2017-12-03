@@ -88,7 +88,7 @@ var offerTemplate = function () {
 };
 
 var fillOfferList = function () {
-  for (var i = 0; i <= randomInteger(1, 5); i++) {
+  for (var i = 0; i <= randomInteger(1, 8); i++) {
     offerList.push(offerTemplate());
   }
 };
@@ -144,7 +144,7 @@ var getFeaturesList = function (featrs) {
 removeMapClass();
 var renderArticle = function (offerVariable) {
   mapElement.querySelector('h3').textContent = offerVariable.offer.title;
-  paragraph.textContent = offerVariable.offer.address;
+  paragraph[0].textContent = offerVariable.offer.address;
   mapElement.querySelector('.popup__price').textContent = offerVariable.offer.price + ' \u20bd/ за ночь';
   mapElement.querySelector('h4').textContent = OFFER_TYPES_RUS[OFFER_TYPES.indexOf(offerVariable.offer.type)];
   paragraph[2].textContent = offerVariable.offer.rooms + ' для ' + offerVariable.offer.guests + ' гостей';
