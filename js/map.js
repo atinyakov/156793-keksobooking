@@ -62,13 +62,6 @@ var randomLengthArr = function (arr) {
 };
 randomLengthArr(FEATURES_LIST);
 
-// var generateSequence = function (min, max) {
-//   var index = 0;
-//   while(true){}
-//     yield index++;
-// }
-// };
-
 var offerTemplate = function (i) {
   var id = ++i;
   var x = randomInteger(300, 900) - 40 / 2;
@@ -76,7 +69,6 @@ var offerTemplate = function (i) {
   var template = {
     author: {
       avatar: 'img/avatars/user0' + id + '.png'
-      // 'img/avatars/user0' + (i + 1) + '.png'
     },
     offer: {
       title: OFFER_TITLES[randomInteger(0, OFFER_TITLES.length - 1)],
@@ -109,7 +101,6 @@ var mapContainer = document.querySelector('.map');
 var sampleMapPin = mapContainer.querySelector('.map__pins');
 var form = document.querySelector('.notice__form');
 var fieldset = document.querySelectorAll('fieldset');
-
 // make fieldset inactive on start
 for (var j = 0; j < fieldset.length; j++) {
   fieldset[j].setAttribute('disabled', 'disabled');
@@ -217,3 +208,4 @@ mouseAction.addEventListener('keydown', function (evt) {
     startForm();
   }
 });
+// form validation
