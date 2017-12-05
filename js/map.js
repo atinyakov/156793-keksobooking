@@ -39,6 +39,8 @@ var FEATURES_LIST = [
 ];
 
 var OFFERS_AMOUNT = 8;
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 var offerList = [];
 // generates random number
 var randomInteger = function (min, max) {
@@ -60,13 +62,13 @@ var randomLengthArr = function (arr) {
 };
 randomLengthArr(FEATURES_LIST);
 
-
-var offerTemplate = function () {
+var offerTemplate = function (i) {
+  var id = ++i;
   var x = randomInteger(300, 900) - 40 / 2;
   var y = randomInteger(100, 500) - 40;
   var template = {
     author: {
-      avatar: 'img/avatars/user0' + randomInteger(1, 7) + '.png'
+      avatar: 'img/avatars/user0' + id + '.png'
     },
     offer: {
       title: OFFER_TITLES[randomInteger(0, OFFER_TITLES.length - 1)],
@@ -90,61 +92,40 @@ var offerTemplate = function () {
 };
 
 var fillOfferList = function () {
-  for (var i = 0; i <= OFFERS_AMOUNT; i++) {
-    offerList.push(offerTemplate());
+  for (var i = 0; i < OFFERS_AMOUNT; i++) {
+    offerList.push(offerTemplate(i));
   }
 };
 fillOfferList();
+var mapContainer = document.querySelector('.map');
+var sampleMapPin = mapContainer.querySelector('.map__pins');
+var form = document.querySelector('.notice__form');
+var fieldset = document.querySelectorAll('fieldset');
+// make fieldset inactive on start
+for (var j = 0; j < fieldset.length; j++) {
+  fieldset[j].setAttribute('disabled', 'disabled');
+}
 
-var item;
-var removeMapClass = function () {
-  item = document.querySelector('.map');
-  item.classList.remove('map--faded');
-};
-
-var elem = document.querySelector('.map__pins');
-
-var offerContstructor = function (obj, i) {
-  var offerPin = document.createElement('BUTTON');
-  offerPin.className = 'map__pin';
-  offerPin.style.left = '' + obj[i].location.x + 'px';
-  offerPin.style.top = '' + obj[i].location.y + 'px';
-  var image = document.createElement('img');
-  image.style.width = '40px';
-  image.style.height = '40px';
-  image.style.draggable = 'false';
-  image.src = obj[i].author.avatar;
-  offerPin.appendChild(image);
-  return offerPin;
-};
-
-var createFragment = function () {
-  var fragment = document.createDocumentFragment();
-  for (var i = 0; i < offerList.length; i++) {
-    fragment.appendChild(offerContstructor(offerList, i));
+var onPageTemplate = document.querySelector('template').content;
+onPageTemplate.querySelector('.popup__features').innerHTML = '';
+var article = onPageTemplate.querySelector('article');
+// removes red highlght from active pin
+var removeActive = function () {
+  var pin = document.querySelector('.map__pin--active');
+  if (pin !== null) {
+    pin.classList.remove('map__pin--active');
   }
-  elem.appendChild(fragment);
 };
-createFragment();
 
-var template = document.querySelector('template').content;
-template.querySelector('.popup__features').innerHTML = '';
-var mapElement = template.cloneNode(true);
-var paragraph = mapElement.querySelectorAll('p');
-
-var getFeaturesList = function (featrs) {
-  var ulElement = mapElement.querySelector('.popup__features');
-  var liFragment = document.createDocumentFragment();
-  for (var i = 0; i <= featrs.length - 1; i++) {
-    var newElement = document.createElement('li');
-    newElement.className = 'feature feature--' + featrs[i];
-    liFragment.appendChild(newElement);
+var hideArticle = function () {
+  var removePopup = document.querySelector('.map__card');
+  if (removePopup !== null) {
+    mapContainer.removeChild(removePopup);
   }
-  ulElement.appendChild(liFragment);
 };
-
-removeMapClass();
 var renderArticle = function (offerVariable) {
+  var mapElement = article.cloneNode(true);
+  var paragraph = mapElement.querySelectorAll('p');
   mapElement.querySelector('h3').textContent = offerVariable.offer.title;
   paragraph[0].textContent = offerVariable.offer.address;
   mapElement.querySelector('.popup__price').textContent = offerVariable.offer.price + ' \u20bd/ за ночь';
@@ -154,6 +135,75 @@ var renderArticle = function (offerVariable) {
   getFeaturesList(offerVariable.offer.features);
   paragraph[4].textContent = offerVariable.offer.description;
   mapElement.querySelector('.popup__avatar').setAttribute('src', offerVariable.author.avatar);
-  item.appendChild(mapElement);
+  var closePopup = mapElement.querySelector('.popup__close');
+  closePopup.addEventListener('click', function () {
+    closePopup.autofocus = false;
+    removeActive();
+    hideArticle();
+  });
+  closePopup.tabIndex = 1;
+  mapContainer.appendChild(mapElement);
 };
-renderArticle(offerList[0]);
+
+var offerContstructor = function (obj, i) {
+  var offerPin = document.createElement('BUTTON');
+  offerPin.className = 'map__pin';
+  offerPin.style.left = '' + obj[i].location.x + 'px';
+  offerPin.style.top = '' + obj[i].location.y + 'px';
+  offerPin.addEventListener('click', function () {
+    removeActive();
+    hideArticle();
+    offerPin.classList.add('map__pin--active');
+    renderArticle(obj[i]);
+  });
+  var image = document.createElement('img');
+  image.style.width = '40px';
+  image.style.height = '40px';
+  image.style.draggable = 'false';
+  image.src = obj[i].author.avatar;
+  offerPin.tabIndex = 1;
+  offerPin.appendChild(image);
+  return offerPin;
+};
+document.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    removeActive();
+    hideArticle();
+  }
+});
+var createFragment = function () {
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < offerList.length; i++) {
+    fragment.appendChild(offerContstructor(offerList, i));
+  }
+  sampleMapPin.appendChild(fragment);
+};
+
+var getFeaturesList = function (featrs) {
+  var mapItem = onPageTemplate.cloneNode(true);
+  var ulElement = mapItem.querySelector('.popup__features');
+  var liFragment = document.createDocumentFragment();
+  for (var i = 0; i <= featrs.length - 1; i++) {
+    var newElement = document.createElement('li');
+    newElement.className = 'feature feature--' + featrs[i];
+    liFragment.appendChild(newElement);
+  }
+  ulElement.appendChild(liFragment);
+};
+// enable form on mouse remove
+var mouseAction = mapContainer.querySelector('.map__pin--main');
+var startForm = function () {
+  form.classList.remove('notice__form--disabled');
+  mapContainer.classList.remove('map--faded');
+  createFragment();
+  for (var k = 0; k < fieldset.length; k++) {
+    fieldset[k].removeAttribute('disabled', 'disabled');
+  }
+};
+
+mouseAction.addEventListener('mouseup', startForm);
+mouseAction.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    startForm();
+  }
+});
