@@ -207,3 +207,67 @@ mouseAction.addEventListener('keydown', function (evt) {
     startForm();
   }
 });
+
+// form validation
+
+var userSelectCheckIn = form.querySelector('#timein');
+var userSelectCheckout = form.querySelector('#timeout');
+// syncs checkin with checkout
+userSelectCheckIn.addEventListener('change', function () {
+  userSelectCheckout.value = userSelectCheckIn.value;
+});
+var typeToMinPrice = {
+  bungalo: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000
+};
+// syncs type with price
+var userSelectType = form.querySelector('#type');
+var userPrice = form.querySelector('#price');
+userSelectType.addEventListener('change', function () {
+  for (var userType in typeToMinPrice) {
+    if (userType === userSelectType.value) {
+      userPrice.min = typeToMinPrice[userType];
+    }
+  }
+});
+
+var selectRooms = form.querySelector('#room_number');
+var selectGuests = form.querySelector('#capacity');
+var options = selectGuests.querySelectorAll('option');
+
+selectRooms.addEventListener('change', function () {
+  // 1 room for 1 guest
+  // console.log(typeof selectRooms.value);
+  if (Number(selectRooms.value) === 1) {
+    // console.log('z nen')
+    options[0].disabled = true; // 3 guests
+    options[1].disabled = true; // 2 guests
+    options[2].disabled = false; // 1 guest
+    options[3].disabled = true; // no guests
+  } else if (Number(selectRooms.value) === 2) {
+    // 2 rooms for 1 or 2 guest
+    options[0].disabled = true;
+    options[1].disabled = false;
+    options[2].disabled = false;
+    options[3].disabled = true;
+  } else if (Number(selectRooms.value) === 3) {
+    // 3 rooms for 1 or 2 or 3
+    options[0].disabled = false;
+    options[1].disabled = false;
+    options[2].disabled = false;
+    options[3].disabled = true;
+  } else if (Number(selectRooms.value) === 100) {
+    // 100 rooms
+    options[0].disabled = true;
+    options[1].disabled = true;
+    options[2].disabled = true;
+    options[3].disabled = false;
+  } else {
+    options[0].disabled = false;
+    options[1].disabled = false;
+    options[2].disabled = false;
+    options[3].disabled = false;
+  }
+});
