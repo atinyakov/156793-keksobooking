@@ -141,7 +141,7 @@ var renderArticle = function (offerVariable) {
     removeActive();
     hideArticle();
   });
-  closePopup.tabindex = '0';
+  closePopup.tabIndex = 1;
   mapContainer.appendChild(mapElement);
 };
 
@@ -156,22 +156,21 @@ var offerContstructor = function (obj, i) {
     offerPin.classList.add('map__pin--active');
     renderArticle(obj[i]);
   });
-  offerPin.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      removeActive();
-      hideArticle();
-    }
-  });
   var image = document.createElement('img');
   image.style.width = '40px';
   image.style.height = '40px';
   image.style.draggable = 'false';
   image.src = obj[i].author.avatar;
-  offerPin.tabindex = '0';
+  offerPin.tabIndex = 1;
   offerPin.appendChild(image);
   return offerPin;
 };
-
+document.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    removeActive();
+    hideArticle();
+  }
+});
 var createFragment = function () {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < offerList.length; i++) {
@@ -208,4 +207,3 @@ mouseAction.addEventListener('keydown', function (evt) {
     startForm();
   }
 });
-// form validation
