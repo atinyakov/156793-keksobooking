@@ -216,6 +216,10 @@ var userSelectCheckout = form.querySelector('#timeout');
 userSelectCheckIn.addEventListener('change', function () {
   userSelectCheckout.value = userSelectCheckIn.value;
 });
+userSelectCheckout.addEventListener('change', function () {
+  userSelectCheckIn.value = userSelectCheckout.value;
+});
+
 var typeToMinPrice = {
   bungalo: 0,
   flat: 1000,
@@ -233,41 +237,22 @@ userSelectType.addEventListener('change', function () {
   }
 });
 
-var selectRooms = form.querySelector('#room_number');
-var selectGuests = form.querySelector('#capacity');
-var options = selectGuests.querySelectorAll('option');
+var roomNumber = form.querySelector('#room_number');
+var capacity = form.querySelector('#capacity');
+// var options = selectGuests.querySelectorAll('option');
 
-selectRooms.addEventListener('change', function () {
-  // 1 room for 1 guest
-  // console.log(typeof selectRooms.value);
-  if (Number(selectRooms.value) === 1) {
-    // console.log('z nen')
-    options[0].disabled = true; // 3 guests
-    options[1].disabled = true; // 2 guests
-    options[2].disabled = false; // 1 guest
-    options[3].disabled = true; // no guests
-  } else if (Number(selectRooms.value) === 2) {
-    // 2 rooms for 1 or 2 guest
-    options[0].disabled = true;
-    options[1].disabled = false;
-    options[2].disabled = false;
-    options[3].disabled = true;
-  } else if (Number(selectRooms.value) === 3) {
-    // 3 rooms for 1 or 2 or 3
-    options[0].disabled = false;
-    options[1].disabled = false;
-    options[2].disabled = false;
-    options[3].disabled = true;
-  } else if (Number(selectRooms.value) === 100) {
-    // 100 rooms
-    options[0].disabled = true;
-    options[1].disabled = true;
-    options[2].disabled = true;
-    options[3].disabled = false;
-  } else {
-    options[0].disabled = false;
-    options[1].disabled = false;
-    options[2].disabled = false;
-    options[3].disabled = false;
+var ROOMS_CAPACITY = {
+  '1': ['1'],
+  '2': ['2', '1'],
+  '3': ['3', '2', '1'],
+  '100': ['0']
+};
+var roomNumberChangeHandler = function () {
+  if (capacity.options.length > 0) {
+    [].forEach.call(capacity.options, function (item) {
+      item.selected = (ROOMS_CAPACITY[roomNumber.value][0] === item.value) ? true : false;
+      item.hidden = (ROOMS_CAPACITY[roomNumber.value].indexOf(item.value) >= 0) ? false : true;
+    });
   }
-});
+};
+roomNumber.addEventListener('change', roomNumberChangeHandler);
