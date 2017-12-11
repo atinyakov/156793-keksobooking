@@ -9,11 +9,7 @@
   for (var j = 0; j < fieldset.length; j++) {
     fieldset[j].setAttribute('disabled', 'disabled');
   }
-<<<<<<< HEAD
-  // removes red highlght from active pin
-=======
   // form start
->>>>>>> fe99c74ed6f542faedbe19b86e49f13e8659384c
   var mouseAction = mapContainer.querySelector('.map__pin--main');
   var startForm = function () {
     form.classList.remove('notice__form--disabled');
@@ -30,8 +26,6 @@
       startForm();
     }
   });
-<<<<<<< HEAD
-=======
   mouseAction.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
     var startCoords = {
@@ -41,6 +35,12 @@
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
       var coords = form.querySelector('#address');
+      var setInitialPosition = function () {
+        var styles = window.getComputedStyle(mouseAction);
+        coords.value = 'x: ' + parseInt(styles.left, 10) + ', y: ' + parseInt(styles.top, 10);
+      };
+
+      setInitialPosition();
       var shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY
@@ -75,7 +75,6 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
->>>>>>> fe99c74ed6f542faedbe19b86e49f13e8659384c
 
   window.map = {
     form: form,
