@@ -1,5 +1,21 @@
 'use strict';
 (function () {
+  var mouseAction = window.map.mapContainer.querySelector('.map__pin--main');
+  var startForm = function () {
+    window.map.form.classList.remove('notice__form--disabled');
+    window.map.mapContainer.classList.remove('map--faded');
+    window.pin.createFragment();
+    for (var k = 0; k < window.map.fieldset.length; k++) {
+      window.map.fieldset[k].removeAttribute('disabled', 'disabled');
+    }
+  };
+
+  mouseAction.addEventListener('mouseup', startForm);
+  mouseAction.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === window.data.ENTER_KEYCODE) {
+      startForm();
+    }
+  });
   // form validation
   var userSelectCheckIn = window.map.form.querySelector('#timein');
   var userSelectCheckout = window.map.form.querySelector('#timeout');
