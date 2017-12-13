@@ -28,16 +28,8 @@
       window.card.hideArticle();
     }
   });
-  var createFragment = function () {
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < window.data.offerList.length; i++) {
-      fragment.appendChild(offerContstructor(window.data.offerList, i));
-    }
-    window.map.sampleMapPin.appendChild(fragment);
-  };
 
   window.pin = {
-    createFragment: createFragment,
     offerContstructor: offerContstructor
   };
 })();
