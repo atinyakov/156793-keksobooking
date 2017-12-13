@@ -36,4 +36,6 @@
     }
   };
   roomNumber.addEventListener('change', roomNumberChangeHandler);
+
+  window.roomNumberChangeHandler = roomNumberChangeHandler;
 })();

@@ -16,6 +16,7 @@
     mapContainer.classList.remove('map--faded');
     window.showCard();
     setInitialPosition();
+    window.roomNumberChangeHandler();
     for (var k = 0; k < fieldset.length; k++) {
       fieldset[k].removeAttribute('disabled', 'disabled');
     }
