@@ -14,7 +14,8 @@
   var startForm = function () {
     form.classList.remove('notice__form--disabled');
     mapContainer.classList.remove('map--faded');
-    window.showCard();
+    // window.showCard();
+    window.backend.load(onSuccess, onError);
     setInitialPosition();
     window.roomNumberChangeHandler();
     for (var k = 0; k < fieldset.length; k++) {
@@ -78,6 +79,17 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
+  var onError = function (message) {
+    var messageBox = document.createElement('div');
+    messageBox.style = 'z-index: 100; position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); text-align: center; font-size: 30px; color: red; border: 1px solid red; background-color: #ffffff; padding: 10px 40px 10px 40px; border-radius: 5px;';
+    messageBox.textContent = message;
+    document.body.insertAdjacentElement('afterbegin', messageBox);
+  };
+
+  var onSuccess = function (data) {
+    window.showCard(data);
+  };
 
   window.map = {
     form: form,
