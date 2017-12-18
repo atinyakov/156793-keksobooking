@@ -5,6 +5,55 @@
   var sampleMapPin = mapContainer.querySelector('.map__pins');
   var form = document.querySelector('.notice__form');
   var fieldset = document.querySelectorAll('fieldset');
+  var filter = document.querySelector('.map__filters');
+  // var housingType = filter.querySelector('#housing-type');
+  // var housingPrice = filter.querySelector('#housing-price');
+  // var housingRooms = filter.querySelector('#housing-rooms');
+  // var housingGuests = filter.querySelector('#housing-guests');
+  // var features = filter.querySelector('#features');
+
+  var removeActivePins = function () {
+    var toRemove = sampleMapPin.querySelectorAll('.map__pin:not(.map__pin--main)');
+    [].forEach.call(toRemove, function (mapPins) {
+      sampleMapPin.removeChild(mapPins);
+    });
+  };
+
+
+  filter.addEventListener('change', function (evt) {
+    window.card.hideArticle();
+    var filtered = [];
+    var filterByValue = function () {
+      if (evt.target.value !== 'any') {
+        var type = evt.target.id;
+        switch (type) {
+          case 'housing-type':
+            type = 'type';
+            break;
+          case 'housing-rooms':
+            type = 'rooms';
+            break;
+          case 'housing-guests':
+            type = 'guests';
+            break;
+          default:
+            return type;
+        }
+        filtered = toFilter.filter(function (item) {
+          return item.offer[type].toString() === evt.target.value;
+        });
+        toFilter = filtered.slice();
+        window.showCard(filtered);
+      } else if (evt.target.value === 'any') {
+        window.showCard(dataFromServer);
+      }
+      return filtered;
+    };
+    removeActivePins();
+    filterByValue();
+
+  });
+
   // make fieldset inactive on start
   for (var j = 0; j < fieldset.length; j++) {
     fieldset[j].setAttribute('disabled', 'disabled');
@@ -86,9 +135,12 @@
     messageBox.textContent = message;
     document.body.insertAdjacentElement('afterbegin', messageBox);
   };
-
+  var dataFromServer;
+  var toFilter;
   var onSuccess = function (data) {
     window.showCard(data);
+    dataFromServer = data.slice();
+    toFilter = dataFromServer.slice();
   };
 
   window.map = {
