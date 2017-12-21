@@ -31,12 +31,10 @@
     var byValue = function (target, field) {
       if (evt.target.value !== 'any') {
         filtered = filtered.filter(function (offerData) {
-          console.log(evt.target.value);
           return offerData.offer[field].toString() === evt.target.value;
         });
       }
-      console.log(filtered);
-      // return filtered;
+      return filtered;
     };
     var byPrice = function () {
       if (type === 'price') {
