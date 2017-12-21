@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-
-  var offerContstructor = function (obj, i) {
+  var ESC_KEYCODE = 27;
+  var createOffer = function (obj, i) {
     var offerPin = document.createElement('BUTTON');
     offerPin.className = 'map__pin';
     offerPin.style.left = '' + obj[i].location.x + 'px';
@@ -23,13 +23,13 @@
     return offerPin;
   };
   document.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === window.data.ESC_KEYCODE) {
+    if (evt.keyCode === ESC_KEYCODE) {
       window.card.removeActive();
       window.card.hideArticle();
     }
   });
 
   window.pin = {
-    offerContstructor: offerContstructor
+    createOffer: createOffer
   };
 })();

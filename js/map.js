@@ -1,6 +1,13 @@
 'use strict';
 
 (function () {
+  var PIN_WIDTH = 40;
+  var PIN_HEIGHT = 40;
+  var PRICES = {
+    low: 10000,
+    high: 50000
+  };
+  var ENTER_KEYCODE = 13;
   var mapContainer = document.querySelector('.map');
   var sampleMapPin = mapContainer.querySelector('.map__pins');
   var form = document.querySelector('.notice__form');
@@ -11,7 +18,7 @@
   var housingRooms = filter.querySelector('#housing-rooms');
   var housingGuests = filter.querySelector('#housing-guests');
   var features = filter.querySelectorAll('#housing-features input[name="features"]');
-  var toFilter = [];
+  var mapItems = [];
 
 
   var removeActivePins = function () {
@@ -21,13 +28,9 @@
     });
   };
 
-  var filterByValue = function (evt) {
-    // console.log(toFilter);
-
-    var filtered = toFilter;
+  var filterMapItems = function (evt) {
+    var filtered = mapItems;
     var type = evt.target.id;
-    // console.log(filtered);
-
     var byValue = function (target, field) {
       if (evt.target.value !== 'any') {
         filtered = filtered.filter(function (offerData) {
@@ -39,16 +42,10 @@
     var byPrice = function () {
       if (housingPrice.value !== 'any') {
         filtered = filtered.filter(function (offerData) {
-
-          var PRICES_TO_COMPARE = {
-            low: 10000,
-            high: 50000
-          };
-
           var filterValues = {
-            'middle': offerData.offer.price >= PRICES_TO_COMPARE.low && offerData.offer.price < PRICES_TO_COMPARE.high,
-            'low': offerData.offer.price < PRICES_TO_COMPARE.low,
-            'high': offerData.offer.price >= PRICES_TO_COMPARE.high
+            'middle': offerData.offer.price >= PRICES.low && offerData.offer.price < PRICES.high,
+            'low': offerData.offer.price < PRICES.low,
+            'high': offerData.offer.price >= PRICES.high
           };
           return filterValues[housingPrice.value];
         });
@@ -92,20 +89,19 @@
 
     window.card.hideArticle();
     removeActivePins();
-    filterByValue(evt);
-    // window.backend.debounce(filterByValue(evt, filtered), 500);
+    filterMapItems(evt);
+    // window.backend.debounce(filterMapItems(evt, filtered), 500);
   });
 
   // make fieldset inactive on start
-  for (var j = 0; j < fieldset.length; j++) {
-    fieldset[j].setAttribute('disabled', 'disabled');
-  }
+  [].forEach.call(fieldset, function (item) {
+    item.setAttribute('disabled', 'disabled');
+  });
   // form start
   var mouseAction = mapContainer.querySelector('.map__pin--main');
   var startForm = function () {
     form.classList.remove('notice__form--disabled');
     mapContainer.classList.remove('map--faded');
-    // window.showCard();
     window.backend.load(onSuccess, onError);
     setInitialPosition();
     window.roomNumberChangeHandler();
@@ -122,7 +118,7 @@
 
   mouseAction.addEventListener('mouseup', startForm);
   mouseAction.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === window.data.ENTER_KEYCODE) {
+    if (evt.keyCode === ENTER_KEYCODE) {
       startForm();
     }
   });
@@ -148,17 +144,17 @@
       var newY = mouseAction.offsetTop - shift.y;
       var newX = mouseAction.offsetLeft - shift.x;
       var coordsYOnForm;
-      var coordsXOnForm = newX - 40 / 2;
+      var coordsXOnForm = newX - PIN_WIDTH / 2;
       mouseAction.style.left = newX + 'px';
-      if (newY > 650) {
-        mouseAction.style.top = '650 px';
-        coordsYOnForm = 650;
+      if (newY > 500) {
+        mouseAction.style.top = '500 px';
+        coordsYOnForm = 500;
       } else if (newY <= 100) {
         mouseAction.style.top = '100 px';
         coordsYOnForm = 100;
       } else {
         mouseAction.style.top = newY + 'px';
-        coordsYOnForm = newY - 40;
+        coordsYOnForm = newY - PIN_HEIGHT;
       }
       coords.value = 'x: ' + coordsXOnForm + ', y: ' + coordsYOnForm;
     };
@@ -177,13 +173,11 @@
     messageBox.textContent = message;
     document.body.insertAdjacentElement('afterbegin', messageBox);
   };
-  // var dataFromServer;
-  // var toFilter;
+
   var onSuccess = function (data) {
-    toFilter = data;
-    console.log(toFilter);
+    mapItems = data;
+    // console.log(mapItems);
     window.showCard(data);
-    // toFilter = dataFromServer.slice();
   };
 
   window.map = {
