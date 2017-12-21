@@ -7,7 +7,7 @@
   var fieldset = document.querySelectorAll('fieldset');
   var filter = document.querySelector('.map__filters');
   var housingType = filter.querySelector('#housing-type');
-  // var housingPrice = filter.querySelector('#housing-price');
+  var housingPrice = filter.querySelector('#housing-price');
   var housingRooms = filter.querySelector('#housing-rooms');
   var housingGuests = filter.querySelector('#housing-guests');
   var features = filter.querySelectorAll('#housing-features input[name="features"]');
@@ -37,7 +37,7 @@
       return filtered;
     };
     var byPrice = function () {
-      if (type === 'price') {
+      if (housingPrice.value !== 'any') {
         filtered = filtered.filter(function (offerData) {
 
           var PRICES_TO_COMPARE = {
@@ -45,12 +45,12 @@
             high: 50000
           };
 
-          var priceFilterValues = {
+          var filterValues = {
             'middle': offerData.offer.price >= PRICES_TO_COMPARE.low && offerData.offer.price < PRICES_TO_COMPARE.high,
             'low': offerData.offer.price < PRICES_TO_COMPARE.low,
             'high': offerData.offer.price >= PRICES_TO_COMPARE.high
           };
-          return priceFilterValues[evt.target.value];
+          return filterValues[housingPrice.value];
         });
       }
     };
