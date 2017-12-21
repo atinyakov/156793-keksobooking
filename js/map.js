@@ -20,7 +20,7 @@
     });
   };
 
-  var filterByValue = function (evt) {
+  var filterByValue = function (evt, filtered) {
     if (evt.target.value !== 'any') {
       var type = evt.target.id;
       switch (type) {
@@ -62,7 +62,7 @@
       } else {
         [].forEach.call(features, function (item) {
           if (item.checked) {
-            filtered = filtered.filter.filter(function (offerData) {
+            filtered = filtered.filter(function (offerData) {
               return offerData.offer.features.indexOf(item.value) >= 0;
             });
           }
@@ -85,17 +85,16 @@
     lastTimeout = window.setTimeout(fun, timeInterval);
   };
 
-  var filtered;
+
   filter.addEventListener('change', function (evt) {
+    var filtered;
     window.card.hideArticle();
     filtered = toFilter;
     removeActivePins();
     // filterByValue(evt, filtered);
     window.backend.debounce(filterByValue(evt, filtered), 500);
   });
-  filter.addEventListener('change', function (evt) {
-    debounce(filterByValue(evt), 500);
-  });
+
   // make fieldset inactive on start
   for (var j = 0; j < fieldset.length; j++) {
     fieldset[j].setAttribute('disabled', 'disabled');
