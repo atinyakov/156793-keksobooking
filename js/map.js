@@ -10,7 +10,8 @@
   // var housingPrice = filter.querySelector('#housing-price');
   // var housingRooms = filter.querySelector('#housing-rooms');
   // var housingGuests = filter.querySelector('#housing-guests');
-  // var features = filter.querySelector('#features');
+  var features = filter.querySelectorAll('#housing-features input[name="features"]');
+
 
   var removeActivePins = function () {
     var toRemove = sampleMapPin.querySelectorAll('.map__pin:not(.map__pin--main)');
@@ -19,41 +20,82 @@
     });
   };
 
-
-  filter.addEventListener('change', function (evt) {
-    window.card.hideArticle();
-    var filtered = [];
-    var filterByValue = function () {
-      if (evt.target.value !== 'any') {
-        var type = evt.target.id;
-        switch (type) {
-          case 'housing-type':
-            type = 'type';
-            break;
-          case 'housing-rooms':
-            type = 'rooms';
-            break;
-          case 'housing-guests':
-            type = 'guests';
-            break;
-          default:
-            return type;
-        }
-        filtered = toFilter.filter(function (item) {
+  var filterByValue = function (evt) {
+    if (evt.target.value !== 'any') {
+      var type = evt.target.id;
+      switch (type) {
+        case 'housing-type':
+          type = 'type';
+          break;
+        case 'housing-rooms':
+          type = 'rooms';
+          break;
+        case 'housing-guests':
+          type = 'guests';
+          break;
+        case 'housing-price':
+          type = 'price';
+          break;
+        case 'housing-features':
+          type = 'features';
+          break;
+      }
+      if (type === 'type' || type === 'rooms' || type === 'guests') {
+        filtered = filtered.filter(function (item) {
           return item.offer[type].toString() === evt.target.value;
         });
-        toFilter = filtered.slice();
-        window.showCard(filtered);
-      } else if (evt.target.value === 'any') {
-        window.showCard(dataFromServer);
+      } else if (type === 'price') {
+        filtered = filtered.filter(function (offerData) {
+
+          var PRICES_TO_COMPARE = {
+            low: 10000,
+            high: 50000
+          };
+
+          var priceFilterValues = {
+            'middle': offerData.offer.price >= PRICES_TO_COMPARE.low && offerData.offer.price < PRICES_TO_COMPARE.high,
+            'low': offerData.offer.price < PRICES_TO_COMPARE.low,
+            'high': offerData.offer.price >= PRICES_TO_COMPARE.high
+          };
+          return priceFilterValues[evt.target.value];
+        });
+      } else {
+        [].forEach.call(features, function (item) {
+          if (item.checked) {
+            filtered = filtered.filter.filter(function (offerData) {
+              return offerData.offer.features.indexOf(item.value) >= 0;
+            });
+          }
+        });
+        return filtered;
       }
-      return filtered;
-    };
+      // toFilter = filtered.slice();
+      window.showCard(filtered);
+    } else if (evt.target.value === 'any') {
+      // window.showCard(dataFromServer);
+    }
+    return filtered;
+  };
+
+  var lastTimeout;
+  var debounce = function (fun, timeInterval) {
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(fun, timeInterval);
+  };
+
+  var filtered;
+  filter.addEventListener('change', function (evt) {
+    window.card.hideArticle();
+    filtered = toFilter;
     removeActivePins();
-    filterByValue();
-
+    // filterByValue(evt, filtered);
+    window.backend.debounce(filterByValue(evt, filtered), 500);
   });
-
+  filter.addEventListener('change', function (evt) {
+    debounce(filterByValue(evt), 500);
+  });
   // make fieldset inactive on start
   for (var j = 0; j < fieldset.length; j++) {
     fieldset[j].setAttribute('disabled', 'disabled');
