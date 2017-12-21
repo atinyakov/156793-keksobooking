@@ -6,11 +6,12 @@
   var form = document.querySelector('.notice__form');
   var fieldset = document.querySelectorAll('fieldset');
   var filter = document.querySelector('.map__filters');
-  // var housingType = filter.querySelector('#housing-type');
+  var housingType = filter.querySelector('#housing-type');
   // var housingPrice = filter.querySelector('#housing-price');
-  // var housingRooms = filter.querySelector('#housing-rooms');
-  // var housingGuests = filter.querySelector('#housing-guests');
+  var housingRooms = filter.querySelector('#housing-rooms');
+  var housingGuests = filter.querySelector('#housing-guests');
   var features = filter.querySelectorAll('#housing-features input[name="features"]');
+  var toFilter = [];
 
 
   var removeActivePins = function () {
@@ -20,31 +21,25 @@
     });
   };
 
-  var filterByValue = function (evt, filtered) {
-    if (evt.target.value !== 'any') {
-      var type = evt.target.id;
-      switch (type) {
-        case 'housing-type':
-          type = 'type';
-          break;
-        case 'housing-rooms':
-          type = 'rooms';
-          break;
-        case 'housing-guests':
-          type = 'guests';
-          break;
-        case 'housing-price':
-          type = 'price';
-          break;
-        case 'housing-features':
-          type = 'features';
-          break;
-      }
-      if (type === 'type' || type === 'rooms' || type === 'guests') {
-        filtered = filtered.filter(function (item) {
-          return item.offer[type].toString() === evt.target.value;
+  var filterByValue = function (evt) {
+    // console.log(toFilter);
+
+    var filtered = toFilter;
+    var type = evt.target.id;
+    // console.log(filtered);
+
+    var byValue = function (target, field) {
+      if (evt.target.value !== 'any') {
+        filtered = filtered.filter(function (offerData) {
+          console.log(evt.target.value);
+          return offerData.offer[field].toString() === evt.target.value;
         });
-      } else if (type === 'price') {
+      }
+      console.log(filtered);
+      // return filtered;
+    };
+    var byPrice = function () {
+      if (type === 'price') {
         filtered = filtered.filter(function (offerData) {
 
           var PRICES_TO_COMPARE = {
@@ -59,31 +54,48 @@
           };
           return priceFilterValues[evt.target.value];
         });
-      } else {
-        [].forEach.call(features, function (item) {
-          if (item.checked) {
-            filtered = filtered.filter(function (offerData) {
-              return offerData.offer.features.indexOf(item.value) >= 0;
-            });
-          }
-        });
-        return filtered;
       }
-      // toFilter = filtered.slice();
-      window.showCard(filtered);
-    } else if (evt.target.value === 'any') {
-      // window.showCard(dataFromServer);
+    };
+
+    var byFeatures = function () {
+      [].forEach.call(features, function (item) {
+        if (item.checked) {
+          filtered = filtered.filter(function (offerData) {
+            return offerData.offer.features.indexOf(item.value) >= 0;
+          });
+        }
+      });
+      return filtered;
+    };
+    switch (type) {
+      case 'housing-type':
+        byValue(housingType, 'type');
+        break;
+      case 'housing-rooms':
+        byValue(housingRooms, 'rooms');
+        break;
+      case 'housing-guests':
+        byValue(housingGuests, 'guests');
+        break;
+      case 'housing-price':
+        byPrice();
+        break;
+      case 'housing-features':
+        byFeatures();
+        break;
     }
+    // byPrice();
+    // byFeatures();
+    // console.log(filtered);
+    window.showCard(filtered);
     return filtered;
   };
-
   filter.addEventListener('change', function (evt) {
-    var filtered;
+
     window.card.hideArticle();
-    filtered = toFilter;
     removeActivePins();
-    // filterByValue(evt, filtered);
-    window.backend.debounce(filterByValue(evt, filtered), 500);
+    filterByValue(evt);
+    // window.backend.debounce(filterByValue(evt, filtered), 500);
   });
 
   // make fieldset inactive on start
@@ -167,12 +179,13 @@
     messageBox.textContent = message;
     document.body.insertAdjacentElement('afterbegin', messageBox);
   };
-  var dataFromServer;
-  var toFilter;
+  // var dataFromServer;
+  // var toFilter;
   var onSuccess = function (data) {
+    toFilter = data;
+    console.log(toFilter);
     window.showCard(data);
-    dataFromServer = data.slice();
-    toFilter = dataFromServer.slice();
+    // toFilter = dataFromServer.slice();
   };
 
   window.map = {
