@@ -77,15 +77,6 @@
     return filtered;
   };
 
-  var lastTimeout;
-  var debounce = function (fun, timeInterval) {
-    if (lastTimeout) {
-      window.clearTimeout(lastTimeout);
-    }
-    lastTimeout = window.setTimeout(fun, timeInterval);
-  };
-
-
   filter.addEventListener('change', function (evt) {
     var filtered;
     window.card.hideArticle();
