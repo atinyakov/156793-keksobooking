@@ -3,6 +3,7 @@
 (function () {
   var SERVER_URL = 'https://1510.dump.academy/keksobooking';
   var TIMEOUT_10SEC = 10000;
+  var DEBOUNCE_INTERVAL = 500; // ms
   var lastTimeout;
   var loadHandler = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
@@ -39,11 +40,11 @@
       xhr.open('GET', SERVER_URL + '/data');
       xhr.send();
     },
-    debounce: function (fun, timeInterval) {
+    debounce: function (fun) {
       if (lastTimeout) {
         window.clearTimeout(lastTimeout);
       }
-      lastTimeout = window.setTimeout(fun, timeInterval);
+      lastTimeout = window.setTimeout(fun, DEBOUNCE_INTERVAL);
     }
   };
 })();
