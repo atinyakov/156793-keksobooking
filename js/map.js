@@ -3,7 +3,10 @@
 (function () {
   var PIN_WIDTH = 40;
   var PIN_HEIGHT = 40;
-
+  var MAX_Y = 500;
+  var MIN_Y = 100;
+  var MAX_X = 1100;
+  var MIN_X = 100;
   var ENTER_KEYCODE = 13;
   var mapContainer = document.querySelector('.map');
   var sampleMapPin = mapContainer.querySelector('.map__pins');
@@ -63,17 +66,29 @@
       var newX = mouseAction.offsetLeft - shift.x;
       var coordsYOnForm;
       var coordsXOnForm = newX - PIN_WIDTH / 2;
-      mouseAction.style.left = newX + 'px';
-      if (newY > 500) {
+
+      if (newY > MAX_Y) {
         mouseAction.style.top = '500 px';
-        coordsYOnForm = 500;
-      } else if (newY <= 100) {
+        coordsYOnForm = MAX_Y;
+      } else if (newY <= MIN_Y) {
         mouseAction.style.top = '100 px';
-        coordsYOnForm = 100;
+        coordsYOnForm = MIN_Y;
       } else {
         mouseAction.style.top = newY + 'px';
         coordsYOnForm = newY - PIN_HEIGHT;
       }
+
+      if (newX > MAX_X) {
+        mouseAction.style.left = '1000 px';
+        coordsXOnForm = MAX_X;
+      } else if (newX <= MIN_X) {
+        mouseAction.style.left = '0 px';
+        coordsXOnForm = MIN_X;
+      } else {
+        mouseAction.style.left = newX + 'px';
+        coordsXOnForm = newX - PIN_HEIGHT;
+      }
+
       coords.value = 'x: ' + coordsXOnForm + ', y: ' + coordsYOnForm;
     };
     var onMouseUp = function (upEvt) {
@@ -102,6 +117,8 @@
     fieldset: fieldset,
     mapContainer: mapContainer,
     sampleMapPin: sampleMapPin,
-    mapItems: mapItems
+    mapItems: function () {
+      return mapItems.slice(0);
+    }
   };
 })();
