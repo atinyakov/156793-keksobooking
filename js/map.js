@@ -1,20 +1,28 @@
 'use strict';
 
 (function () {
+  var PIN_WIDTH = 40;
+  var PIN_HEIGHT = 40;
+  var MAX_Y = 500;
+  var MIN_Y = 100;
+  var MAX_X = 1100;
+  var MIN_X = 100;
+  var ENTER_KEYCODE = 13;
   var mapContainer = document.querySelector('.map');
   var sampleMapPin = mapContainer.querySelector('.map__pins');
   var form = document.querySelector('.notice__form');
   var fieldset = document.querySelectorAll('fieldset');
+  var mapItems;
+
   // make fieldset inactive on start
-  for (var j = 0; j < fieldset.length; j++) {
-    fieldset[j].setAttribute('disabled', 'disabled');
-  }
+  [].forEach.call(fieldset, function (item) {
+    item.setAttribute('disabled', 'disabled');
+  });
   // form start
   var mouseAction = mapContainer.querySelector('.map__pin--main');
   var startForm = function () {
     form.classList.remove('notice__form--disabled');
     mapContainer.classList.remove('map--faded');
-    // window.showCard();
     window.backend.load(onSuccess, onError);
     setInitialPosition();
     window.roomNumberChangeHandler();
@@ -31,7 +39,7 @@
 
   mouseAction.addEventListener('mouseup', startForm);
   mouseAction.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === window.data.ENTER_KEYCODE) {
+    if (evt.keyCode === ENTER_KEYCODE) {
       startForm();
     }
   });
@@ -57,18 +65,30 @@
       var newY = mouseAction.offsetTop - shift.y;
       var newX = mouseAction.offsetLeft - shift.x;
       var coordsYOnForm;
-      var coordsXOnForm = newX - 40 / 2;
-      mouseAction.style.left = newX + 'px';
-      if (newY > 650) {
-        mouseAction.style.top = '650 px';
-        coordsYOnForm = 650;
-      } else if (newY <= 100) {
+      var coordsXOnForm = newX - PIN_WIDTH / 2;
+
+      if (newY > MAX_Y) {
+        mouseAction.style.top = '500 px';
+        coordsYOnForm = MAX_Y;
+      } else if (newY <= MIN_Y) {
         mouseAction.style.top = '100 px';
-        coordsYOnForm = 100;
+        coordsYOnForm = MIN_Y;
       } else {
         mouseAction.style.top = newY + 'px';
-        coordsYOnForm = newY - 40;
+        coordsYOnForm = newY - PIN_HEIGHT;
       }
+
+      if (newX > MAX_X) {
+        mouseAction.style.left = '1000 px';
+        coordsXOnForm = MAX_X;
+      } else if (newX <= MIN_X) {
+        mouseAction.style.left = '0 px';
+        coordsXOnForm = MIN_X;
+      } else {
+        mouseAction.style.left = newX + 'px';
+        coordsXOnForm = newX - PIN_HEIGHT;
+      }
+
       coords.value = 'x: ' + coordsXOnForm + ', y: ' + coordsYOnForm;
     };
     var onMouseUp = function (upEvt) {
@@ -88,6 +108,7 @@
   };
 
   var onSuccess = function (data) {
+    mapItems = data;
     window.showCard(data);
   };
 
@@ -95,6 +116,9 @@
     form: form,
     fieldset: fieldset,
     mapContainer: mapContainer,
-    sampleMapPin: sampleMapPin
+    sampleMapPin: sampleMapPin,
+    mapItems: function () {
+      return mapItems.slice(0);
+    }
   };
 })();

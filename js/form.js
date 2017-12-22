@@ -18,12 +18,13 @@
   var roomNumber = window.map.form.querySelector('#room_number');
   var capacity = window.map.form.querySelector('#capacity');
   var newElem = document.querySelector('#submit_message'); // element to display an error
+
   // syncs checkin with checkout
   var syncValues = function (element, value) {
-    element.value = value;
+    element.placeholder = value;
   };
-
   window.synchronizeFields.synchronizeFields(userSelectCheckIn, userSelectCheckout, ['12:00', '13:00', '14:00'], ['12:00', '13:00', '14:00'], syncValues, true);
+
   // syncs type with price
   window.synchronizeFields.synchronizeFields(userSelectType, userPrice, roomType, minPrice, syncValues, false);
   // sync rooms with guests
@@ -47,6 +48,7 @@
   newElem.style = 'margin: auto; text-align: center; font-size: 20px; color: red; border: 1px solid red; padding: 10px 20px 10px 20px; border-radius: 5px; visibility: hidden';
   var onLoad = function () {
     window.map.form.reset();
+    roomNumberChangeHandler();
     newElem.style.color = '#108a02';
     newElem.style.visibility = 'visible';
     newElem.textContent = 'Объявление успешно опубликовано';
