@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var synchronizeFields = function (field1, field2, data1, data2, action, twoWaySync) {
+  window.dropDownChangeHandler = function (field1, field2, data1, data2, action, twoWaySync) {
     field1.addEventListener('change', function (evt) {
       var index = data1.indexOf(evt.target.value);
       action(field2, data2[index]);
@@ -13,7 +13,7 @@
       });
     }
   };
-  window.synchronizeFields = {
-    synchronizeFields: synchronizeFields
-  };
+  // window.synchronizeFields = {
+  //   synchronizeFields: synchronizeFields
+  // };
 })();

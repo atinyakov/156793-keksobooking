@@ -16,7 +16,7 @@
 
   // make fieldset inactive on start
   [].forEach.call(fieldset, function (item) {
-    item.setAttribute('disabled', 'disabled');
+    item.style.disabled = true;
   });
   // form start
   var mouseAction = mapContainer.querySelector('.map__pin--main');

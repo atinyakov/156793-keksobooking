@@ -20,13 +20,18 @@
   var newElem = document.querySelector('#submit_message'); // element to display an error
 
   // syncs checkin with checkout
-  var syncValues = function (element, value) {
-    element.placeholder = value;
+  var syncValuesChekInVsCheckout = function (element, value) {
+    element.value = value;
   };
-  window.synchronizeFields.synchronizeFields(userSelectCheckIn, userSelectCheckout, ['12:00', '13:00', '14:00'], ['12:00', '13:00', '14:00'], syncValues, true);
+  window.dropDownChangeHandler(userSelectCheckIn, userSelectCheckout, ['12:00', '13:00', '14:00'], ['12:00', '13:00', '14:00'], syncValuesChekInVsCheckout, true);
 
   // syncs type with price
-  window.synchronizeFields.synchronizeFields(userSelectType, userPrice, roomType, minPrice, syncValues, false);
+  var syncValuesRoomsVsGuests = function (element, value) {
+    element.placeholder = value;
+    element.min = value;
+  };
+  window.dropDownChangeHandler(userSelectType, userPrice, roomType, minPrice, syncValuesRoomsVsGuests, false);
+
   // sync rooms with guests
   var roomNumberChangeHandler = function () {
     if (capacity.options.length > 0) {
@@ -36,6 +41,7 @@
       });
     }
   };
+  roomNumberChangeHandler();
   roomNumber.addEventListener('change', roomNumberChangeHandler);
   // form submit handler
   submit.addEventListener('click', function (evt) {
@@ -44,6 +50,7 @@
       window.backend.save(new FormData(window.map.form), onLoad, onError);
     }
   });
+  roomNumberChangeHandler();
   // submit status message
   newElem.style = 'margin: auto; text-align: center; font-size: 20px; color: red; border: 1px solid red; padding: 10px 20px 10px 20px; border-radius: 5px; visibility: hidden';
   var onLoad = function () {
