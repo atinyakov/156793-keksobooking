@@ -19,18 +19,15 @@
   var capacity = window.map.form.querySelector('#capacity');
   var newElem = document.querySelector('#submit_message'); // element to display an error
 
-  // syncs checkin with checkout
+  // func syncs checkin with checkout
   var syncValuesChekInVsCheckout = function (element, value) {
     element.value = value;
   };
-  window.dropDownChangeHandler(userSelectCheckIn, userSelectCheckout, ['12:00', '13:00', '14:00'], ['12:00', '13:00', '14:00'], syncValuesChekInVsCheckout, true);
-
   // syncs type with price
   var syncValuesRoomsVsGuests = function (element, value) {
     element.placeholder = value;
     element.min = value;
   };
-  window.dropDownChangeHandler(userSelectType, userPrice, roomType, minPrice, syncValuesRoomsVsGuests, false);
 
   // sync rooms with guests
   var roomNumberChangeHandler = function () {
@@ -44,15 +41,13 @@
   roomNumberChangeHandler();
   roomNumber.addEventListener('change', roomNumberChangeHandler);
   // form submit handler
-  submit.addEventListener('click', function (evt) {
-    if (window.map.form.checkValidity()) {
-      evt.preventDefault();
-      window.backend.save(new FormData(window.map.form), onLoad, onError);
-    }
+  submit.addEventListener('onsubmit', function () {
+    window.backend.save(new FormData(window.map.form), onLoad, errorHandler);
+    roomNumberChangeHandler();
   });
-  roomNumberChangeHandler();
   // submit status message
   newElem.style = 'margin: auto; text-align: center; font-size: 20px; color: red; border: 1px solid red; padding: 10px 20px 10px 20px; border-radius: 5px; visibility: hidden';
+
   var onLoad = function () {
     window.map.form.reset();
     roomNumberChangeHandler();
@@ -63,17 +58,21 @@
       clearMessage(newElem);
     }, 5000);
   };
-  // hides message from form
-  var clearMessage = function (el) {
-    el.style.visibility = 'hidden';
-  };
 
-  var onError = function (error) {
+  var errorHandler = function (error) {
     newElem.style.color = 'red';
     newElem.textContent = error;
     setTimeout(function () {
       clearMessage(newElem);
     }, 5000);
   };
+  // hides message from form
+  var clearMessage = function (el) {
+    el.style.visibility = 'hidden';
+  };
+
+  window.dropDownChangeHandler(userSelectCheckIn, userSelectCheckout, ['12:00', '13:00', '14:00'], ['12:00', '13:00', '14:00'], syncValuesChekInVsCheckout, true);
+  window.dropDownChangeHandler(userSelectType, userPrice, roomType, minPrice, syncValuesRoomsVsGuests, false);
+
   window.roomNumberChangeHandler = roomNumberChangeHandler;
 })();

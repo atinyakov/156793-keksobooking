@@ -11,7 +11,6 @@
   var housingPrice = filter.querySelector('#housing-price');
   var housingRooms = filter.querySelector('#housing-rooms');
   var housingGuests = filter.querySelector('#housing-guests');
-
   var filteredOffers = [];
 
   var removeActivePins = function () {
@@ -57,9 +56,6 @@
 
   var filterMapItems = function () {
     filteredOffers = window.map.mapItems();
-    // if (evt.target.value !== 'any') {
-    //
-    // }
     filterByValue(housingType, 'type');
     filterByPrice();
     filterByValue(housingRooms, 'rooms');
@@ -71,6 +67,6 @@
   filter.addEventListener('change', function (evt) {
     window.card.hideArticle();
     removeActivePins();
-    window.backend.debounce(filterMapItems(evt), 500);
+    window.debounce(filterMapItems(evt));
   });
 }());

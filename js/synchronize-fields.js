@@ -13,7 +13,4 @@
       });
     }
   };
-  // window.synchronizeFields = {
-  //   synchronizeFields: synchronizeFields
-  // };
 })();
