@@ -64,9 +64,9 @@
     window.showCard(filteredOffers);
   };
 
-  filter.addEventListener('change', function (evt) {
+  filter.addEventListener('change', function () {
     window.card.hideArticle();
     removeActivePins();
-    window.debounce(filterMapItems(evt));
+    window.debounce(filterMapItems);
   });
 }());
