@@ -23,9 +23,9 @@
     }
   };
 
-  var onPageTemplate = document.querySelector('template').content;
-  onPageTemplate.querySelector('.popup__features').innerHTML = '';
-  var article = onPageTemplate.querySelector('article');
+  var pageTemplate = document.querySelector('template').content;
+  pageTemplate.querySelector('.popup__features').innerHTML = '';
+  var article = pageTemplate.querySelector('article');
 
   var getFeaturesList = function (mapElement, featrs) {
     var ulElement = mapElement.querySelector('.popup__features');
@@ -48,7 +48,7 @@
     paragraph[3].textContent = 'Заезд после ' + offerVariable.offer.checkin + ' , выезд до ' + offerVariable.offer.checkout;
     getFeaturesList(mapElement, offerVariable.offer.features);
     paragraph[4].textContent = offerVariable.offer.description;
-    mapElement.querySelector('.popup__avatar').setAttribute('src', offerVariable.author.avatar);
+    mapElement.querySelector('.popup__avatar').src = offerVariable.author.avatar;
     var closePopup = mapElement.querySelector('.popup__close');
     closePopup.addEventListener('click', function () {
       closePopup.autofocus = false;

@@ -7,6 +7,7 @@
     '3': ['3', '2', '1'],
     '100': ['0']
   };
+  var TIME_OUT = 5000;
   var form = document.querySelector('.notice__form');
   var userSelectCheckIn = form.querySelector('#timein');
   var userSelectCheckout = form.querySelector('#timeout');
@@ -31,7 +32,7 @@
   };
 
   // sync rooms with guests
-  var roomNumberChangeHandler = function () {
+  var onRoomNumberChange = function () {
     if (capacity.options.length > 0) {
       [].forEach.call(capacity.options, function (item) {
         item.selected = (ROOMS_CAPACITY[roomNumber.value][0] === item.value) ? true : false;
@@ -40,23 +41,23 @@
     }
   };
 
-  var onLoadHandler = function () {
+  var onLoad = function () {
     form.reset();
-    roomNumberChangeHandler();
+    onRoomNumberChange();
     newElem.style.color = '#108a02';
     newElem.style.visibility = 'visible';
     newElem.textContent = 'Объявление успешно опубликовано';
     setTimeout(function () {
       clearMessage(newElem);
-    }, 5000);
+    }, TIME_OUT);
   };
 
-  var errorHandler = function (error) {
+  var onError = function (error) {
     newElem.style.color = 'red';
     newElem.textContent = error;
     setTimeout(function () {
       clearMessage(newElem);
-    }, 5000);
+    }, TIME_OUT);
   };
 
   var removeFadeOnStart = function () {
@@ -65,10 +66,10 @@
       item.style.disabled = false;
     });
   };
-  // form submit handler
+  // on form submit
   submit.addEventListener('onsubmit', function () {
-    window.backend.save(new FormData(form), onLoadHandler, errorHandler);
-    roomNumberChangeHandler();
+    window.backend.save(new FormData(form), onLoad, onError);
+    onRoomNumberChange();
   });
   // submit status message
   newElem.style = 'margin: auto; text-align: center; font-size: 20px; color: red; border: 1px solid red; padding: 10px 20px 10px 20px; border-radius: 5px; visibility: hidden';
@@ -77,10 +78,10 @@
   var clearMessage = function (el) {
     el.style.visibility = 'hidden';
   };
-  roomNumberChangeHandler();
-  roomNumber.addEventListener('change', roomNumberChangeHandler);
-  window.dropDownChangeHandler(userSelectCheckIn, userSelectCheckout, ['12:00', '13:00', '14:00'], ['12:00', '13:00', '14:00'], syncValuesChekInVsCheckout, true);
-  window.dropDownChangeHandler(userSelectType, userPrice, roomType, minPrice, syncValuesRoomsVsGuests, false);
+  onRoomNumberChange();
+  roomNumber.addEventListener('change', onRoomNumberChange);
+  window.synchronizeFields(userSelectCheckIn, userSelectCheckout, ['12:00', '13:00', '14:00'], ['12:00', '13:00', '14:00'], syncValuesChekInVsCheckout, true);
+  window.synchronizeFields(userSelectType, userPrice, roomType, minPrice, syncValuesRoomsVsGuests, false);
 
   // make fieldset inactive on start
   [].forEach.call(fieldset, function (item) {
@@ -88,7 +89,7 @@
   });
   window.form = {
     form: form,
-    roomNumberChangeHandler: roomNumberChangeHandler,
+    onRoomNumberChange: onRoomNumberChange,
     removeFadeOnStart: removeFadeOnStart
   };
 

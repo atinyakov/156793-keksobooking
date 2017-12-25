@@ -11,7 +11,6 @@
   var mapContainer = document.querySelector('.map');
   var sampleMapPin = mapContainer.querySelector('.map__pins');
 
-
   var mapItems;
   var mouseAction = mapContainer.querySelector('.map__pin--main');
   var coords = window.form.form.querySelector('#address');
@@ -21,9 +20,9 @@
   var startForm = function () {
     window.form.removeFadeOnStart();
     mapContainer.classList.remove('map--faded');
-    window.backend.load(onSuccess, errorHandler);
+    window.backend.load(onSuccess, onError);
     setInitialPosition();
-    window.form.roomNumberChangeHandler();
+    window.form.onRoomNumberChange();
   };
 
 
@@ -57,21 +56,12 @@
       y: moveEvt.clientY
     };
 
-    // clamping func
-    function defineCoord(coord, val, min, max, isX) {
-      coord = Math.max(min, Math.min(max, val));
-      if (isX) {
-        mouseAction.style.left = coord + 'px';
-      } else {
-        mouseAction.style.top = coord + 'px';
-      }
-      return coord;
-    }
-    defineCoord(coordsXOnForm, newX, MIN_X, MAX_X, true);
-    defineCoord(coordsYOnForm, newY, MIN_Y, MAX_Y, false);
+    coordsXOnForm = window.utils.clampValue(newX, MIN_X, MAX_X);
+    coordsYOnForm = window.utils.clampValue(newY, MIN_Y, MAX_Y);
     coords.value = 'x: ' + coordsXOnForm + ', y: ' + coordsYOnForm;
+    mouseAction.style.left = coordsXOnForm + 'px';
+    mouseAction.style.top = coordsYOnForm + 'px';
   };
-
   var onMouseUp = function (upEvt) {
     upEvt.preventDefault();
     document.removeEventListener('mousemove', onMouseMove);
@@ -89,7 +79,7 @@
     document.addEventListener('mouseup', onMouseUp);
   });
 
-  var errorHandler = function (message) {
+  var onError = function (message) {
     var messageBox = document.createElement('div');
     messageBox.style = 'z-index: 100; position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); text-align: center; font-size: 30px; color: red; border: 1px solid red; background-color: #ffffff; padding: 10px 40px 10px 40px; border-radius: 5px;';
     messageBox.textContent = message;

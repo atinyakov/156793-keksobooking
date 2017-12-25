@@ -25,6 +25,9 @@
         clearTimeout(lastTimeout);
         lastTimeout = setTimeout(func, interval);
       };
+    },
+    clampValue: function (val, min, max) {
+      return Math.max(min, Math.min(max, val));
     }
   };
 }());
