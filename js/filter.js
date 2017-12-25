@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var DEBOUNCE_INTERVAL = 500; // ms
   var PRICES = {
     low: 10000,
     high: 50000
@@ -55,6 +56,8 @@
   };
 
   var filterMapItems = function () {
+    window.card.hideArticle();
+    removeActivePins();
     filteredOffers = window.map.mapItems();
     filterByValue(housingType, 'type');
     filterByPrice();
@@ -64,9 +67,8 @@
     window.showCard(filteredOffers);
   };
 
-  filter.addEventListener('change', function () {
-    window.card.hideArticle();
-    removeActivePins();
-    window.debounce(filterMapItems);
-  });
+  var debounce = window.utils.debounce(filterMapItems, DEBOUNCE_INTERVAL);
+
+  filter.addEventListener('change', debounce);
+
 }());

@@ -15,7 +15,7 @@
   var mapItems;
   var mouseAction = mapContainer.querySelector('.map__pin--main');
   var coords = form.querySelector('#address');
-
+  var startCoords;
 
   // make fieldset inactive on start
   [].forEach.call(fieldset, function (item) {
@@ -45,48 +45,52 @@
     }
   });
 
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    var newY = mouseAction.offsetTop - shift.y;
+    var newX = mouseAction.offsetLeft - shift.x;
+    var coordsYOnForm = newY - PIN_HEIGHT;
+    var coordsXOnForm = newX - PIN_WIDTH / 2;
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    // clamping func
+    function defineCoord(coord, val, min, max, isX) {
+      coord = Math.max(min, Math.min(max, val));
+      if (isX) {
+        mouseAction.style.left = coord + 'px';
+      } else {
+        mouseAction.style.top = coord + 'px';
+      }
+      return coord;
+    }
+    defineCoord(coordsXOnForm, newX, MIN_X, MAX_X, true);
+    defineCoord(coordsYOnForm, newY, MIN_Y, MAX_Y, false);
+    coords.value = 'x: ' + coordsXOnForm + ', y: ' + coordsYOnForm;
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
   mouseAction.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
-    var startCoords = {
+    startCoords = {
       x: evt.clientX,
       y: evt.clientY
     };
-    var onMouseMove = function (moveEvt) {
-      moveEvt.preventDefault();
 
-      var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
-      };
-      var newY = mouseAction.offsetTop - shift.y;
-      var newX = mouseAction.offsetLeft - shift.x;
-      var coordsYOnForm = newY - PIN_HEIGHT;
-      var coordsXOnForm = newX - PIN_WIDTH / 2;
-
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
-
-      // clamping func
-      function defineCoord(coord, val, min, max, isX) {
-        coord = Math.max(min, Math.min(max, val));
-        if (isX) {
-          mouseAction.style.left = coord + 'px';
-        } else {
-          mouseAction.style.top = coord + 'px';
-        }
-        return coord;
-      }
-      defineCoord(coordsXOnForm, newX, MIN_X, MAX_X, true);
-      defineCoord(coordsYOnForm, newY, MIN_Y, MAX_Y, false);
-      coords.value = 'x: ' + coordsXOnForm + ', y: ' + coordsYOnForm;
-    };
-    var onMouseUp = function (upEvt) {
-      upEvt.preventDefault();
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });

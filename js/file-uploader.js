@@ -9,14 +9,14 @@
   // site visitors cnage their userpic
   var onUserpicChange = function () {
     var file = userpicSelect.files[0];
-    window.uploadImg(file, IMG_TYPES, function (reader) {
+    window.utils.uploadImg(file, IMG_TYPES, function (reader) {
       userpicBox.src = reader.result;
     });
   };
   // site visitors upload their pictures of an offer
   var loadPics = function (offerPics) {
     offerPics.forEach(function (picture) {
-      window.uploadImg(picture, IMG_TYPES, function (reader) {
+      window.utils.uploadImg(picture, IMG_TYPES, function (reader) {
         var image = document.createElement('img');
         image.src = reader.result;
         image.classList.add('user__pic');

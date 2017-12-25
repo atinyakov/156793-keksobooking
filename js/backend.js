@@ -4,13 +4,13 @@
   var SERVER_URL = 'https://1510.dump.academy/keksobooking';
   var TIMEOUT_10SEC = 10000;
   var OK_STATUS = 200;
-  var loadHandler = function (onLoad, errorHandler) {
+  var loadHandler = function (onLoadHandler, errorHandler) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
       if (xhr.status === OK_STATUS) {
-        onLoad(xhr.response);
+        onLoadHandler(xhr.response);
       } else {
         errorHandler('Неизвестный статус: ' + xhr.status + ' ' + xhr.statusText);
       }
@@ -29,13 +29,13 @@
   };
 
   window.backend = {
-    save: function (data, onLoad, errorHandler) {
-      var xhr = loadHandler(onLoad, errorHandler);
+    save: function (data, onLoadHandler, errorHandler) {
+      var xhr = loadHandler(onLoadHandler, errorHandler);
       xhr.open('POST', SERVER_URL);
       xhr.send(data);
     },
-    load: function (onLoad, errorHandler) {
-      var xhr = loadHandler(onLoad, errorHandler);
+    load: function (onLoadHandler, errorHandler) {
+      var xhr = loadHandler(onLoadHandler, errorHandler);
       xhr.open('GET', SERVER_URL + '/data');
       xhr.send();
     }
