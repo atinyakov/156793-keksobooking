@@ -39,8 +39,6 @@
       });
     }
   };
-  roomNumberChangeHandler();
-  roomNumber.addEventListener('change', roomNumberChangeHandler);
 
   var onLoadHandler = function () {
     form.reset();
@@ -79,7 +77,8 @@
   var clearMessage = function (el) {
     el.style.visibility = 'hidden';
   };
-
+  roomNumberChangeHandler();
+  roomNumber.addEventListener('change', roomNumberChangeHandler);
   window.dropDownChangeHandler(userSelectCheckIn, userSelectCheckout, ['12:00', '13:00', '14:00'], ['12:00', '13:00', '14:00'], syncValuesChekInVsCheckout, true);
   window.dropDownChangeHandler(userSelectType, userPrice, roomType, minPrice, syncValuesRoomsVsGuests, false);
 
