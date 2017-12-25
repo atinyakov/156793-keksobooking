@@ -10,28 +10,22 @@
   var ENTER_KEYCODE = 13;
   var mapContainer = document.querySelector('.map');
   var sampleMapPin = mapContainer.querySelector('.map__pins');
-  var form = document.querySelector('.notice__form');
-  var fieldset = document.querySelectorAll('fieldset');
+
+
   var mapItems;
   var mouseAction = mapContainer.querySelector('.map__pin--main');
-  var coords = form.querySelector('#address');
+  var coords = window.form.form.querySelector('#address');
   var startCoords;
 
-  // make fieldset inactive on start
-  [].forEach.call(fieldset, function (item) {
-    item.style.disabled = true;
-  });
   // form start
   var startForm = function () {
-    form.classList.remove('notice__form--disabled');
+    window.form.removeFadeOnStart();
     mapContainer.classList.remove('map--faded');
     window.backend.load(onSuccess, errorHandler);
     setInitialPosition();
-    window.roomNumberChangeHandler();
-    for (var k = 0; k < fieldset.length; k++) {
-      fieldset[k].removeAttribute('disabled', 'disabled');
-    }
+    window.form.roomNumberChangeHandler();
   };
+
 
   var setInitialPosition = function () {
     var styles = window.getComputedStyle(mouseAction);
@@ -108,8 +102,6 @@
   };
 
   window.map = {
-    form: form,
-    fieldset: fieldset,
     mapContainer: mapContainer,
     sampleMapPin: sampleMapPin,
     mapItems: function () {

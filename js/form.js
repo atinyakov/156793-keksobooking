@@ -7,17 +7,18 @@
     '3': ['3', '2', '1'],
     '100': ['0']
   };
-
-  var userSelectCheckIn = window.map.form.querySelector('#timein');
-  var userSelectCheckout = window.map.form.querySelector('#timeout');
-  var submit = window.map.form.querySelector('button');
-  var userSelectType = window.map.form.querySelector('#type');
-  var userPrice = window.map.form.querySelector('#price');
+  var form = document.querySelector('.notice__form');
+  var userSelectCheckIn = form.querySelector('#timein');
+  var userSelectCheckout = form.querySelector('#timeout');
+  var submit = form.querySelector('button');
+  var userSelectType = form.querySelector('#type');
+  var userPrice = form.querySelector('#price');
   var roomType = ['bungalo', 'flat', 'house', 'palace'];
   var minPrice = [0, 1000, 5000, 10000];
-  var roomNumber = window.map.form.querySelector('#room_number');
-  var capacity = window.map.form.querySelector('#capacity');
+  var roomNumber = form.querySelector('#room_number');
+  var capacity = form.querySelector('#capacity');
   var newElem = document.querySelector('#submit_message'); // element to display an error
+  var fieldset = document.querySelectorAll('fieldset');
 
   // func syncs checkin with checkout
   var syncValuesChekInVsCheckout = function (element, value) {
@@ -40,13 +41,9 @@
   };
   roomNumberChangeHandler();
   roomNumber.addEventListener('change', roomNumberChangeHandler);
-  // hides message from form
-  var clearMessage = function (el) {
-    el.style.visibility = 'hidden';
-  };
 
   var onLoadHandler = function () {
-    window.map.form.reset();
+    form.reset();
     roomNumberChangeHandler();
     newElem.style.color = '#108a02';
     newElem.style.visibility = 'visible';
@@ -64,16 +61,36 @@
     }, 5000);
   };
 
+  var removeFadeOnStart = function () {
+    form.classList.remove('notice__form--disabled');
+    [].forEach.call(fieldset, function (item) {
+      item.style.disabled = false;
+    });
+  };
   // form submit handler
   submit.addEventListener('onsubmit', function () {
-    window.backend.save(new FormData(window.map.form), onLoadHandler, errorHandler);
+    window.backend.save(new FormData(form), onLoadHandler, errorHandler);
     roomNumberChangeHandler();
   });
   // submit status message
   newElem.style = 'margin: auto; text-align: center; font-size: 20px; color: red; border: 1px solid red; padding: 10px 20px 10px 20px; border-radius: 5px; visibility: hidden';
 
+  // hides message from form
+  var clearMessage = function (el) {
+    el.style.visibility = 'hidden';
+  };
+
   window.dropDownChangeHandler(userSelectCheckIn, userSelectCheckout, ['12:00', '13:00', '14:00'], ['12:00', '13:00', '14:00'], syncValuesChekInVsCheckout, true);
   window.dropDownChangeHandler(userSelectType, userPrice, roomType, minPrice, syncValuesRoomsVsGuests, false);
 
-  window.roomNumberChangeHandler = roomNumberChangeHandler;
+  // make fieldset inactive on start
+  [].forEach.call(fieldset, function (item) {
+    item.style.disabled = true;
+  });
+  window.form = {
+    form: form,
+    roomNumberChangeHandler: roomNumberChangeHandler,
+    removeFadeOnStart: removeFadeOnStart
+  };
+
 })();
