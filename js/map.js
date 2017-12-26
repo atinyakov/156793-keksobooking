@@ -16,6 +16,22 @@
   var coords = window.form.form.querySelector('#address');
   var startCoords;
 
+  var setInitialPosition = function () {
+    var styles = window.getComputedStyle(mouseAction);
+    coords.value = 'x: ' + parseInt(styles.left, 10) + ', y: ' + parseInt(styles.top, 10);
+  };
+  var onError = function (message) {
+    var messageBox = document.createElement('div');
+    messageBox.style = 'z-index: 100; position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); text-align: center; font-size: 30px; color: red; border: 1px solid red; background-color: #ffffff; padding: 10px 40px 10px 40px; border-radius: 5px;';
+    messageBox.textContent = message;
+    document.body.insertAdjacentElement('afterbegin', messageBox);
+  };
+
+  var onSuccess = function (data) {
+    mapItems = data;
+    window.showCard(data);
+  };
+
   // form start
   var startForm = function () {
     window.form.removeFadeOnStart();
@@ -23,12 +39,6 @@
     window.backend.load(onSuccess, onError);
     setInitialPosition();
     window.form.onRoomNumberChange();
-  };
-
-
-  var setInitialPosition = function () {
-    var styles = window.getComputedStyle(mouseAction);
-    coords.value = 'x: ' + parseInt(styles.left, 10) + ', y: ' + parseInt(styles.top, 10);
   };
 
   mouseAction.addEventListener('mouseup', startForm);
@@ -78,18 +88,6 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
-
-  var onError = function (message) {
-    var messageBox = document.createElement('div');
-    messageBox.style = 'z-index: 100; position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); text-align: center; font-size: 30px; color: red; border: 1px solid red; background-color: #ffffff; padding: 10px 40px 10px 40px; border-radius: 5px;';
-    messageBox.textContent = message;
-    document.body.insertAdjacentElement('afterbegin', messageBox);
-  };
-
-  var onSuccess = function (data) {
-    mapItems = data;
-    window.showCard(data);
-  };
 
   window.map = {
     mapContainer: mapContainer,
