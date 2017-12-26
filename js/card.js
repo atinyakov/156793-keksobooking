@@ -10,6 +10,7 @@
     'Дом',
     'Бунгало'
   ];
+  var CURRENCY_RUR = '\u20bd/';
   var removeActive = function () {
     var pin = document.querySelector('.map__pin--active');
     if (pin !== null) {
@@ -42,7 +43,7 @@
     var paragraph = mapElement.querySelectorAll('p');
     mapElement.querySelector('h3').textContent = offerVariable.offer.title;
     paragraph[0].textContent = offerVariable.offer.address;
-    mapElement.querySelector('.popup__price').textContent = offerVariable.offer.price + ' \u20bd/ за ночь';
+    mapElement.querySelector('.popup__price').textContent = offerVariable.offer.price + ' ' + CURRENCY_RUR + '  за ночь';
     mapElement.querySelector('h4').textContent = OFFER_TYPES_RUS[OFFER_TYPES.indexOf(offerVariable.offer.type)];
     paragraph[2].textContent = offerVariable.offer.rooms + ' для ' + offerVariable.offer.guests + ' гостей';
     paragraph[3].textContent = 'Заезд после ' + offerVariable.offer.checkin + ' , выезд до ' + offerVariable.offer.checkout;

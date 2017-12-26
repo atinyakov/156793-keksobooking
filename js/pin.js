@@ -2,7 +2,15 @@
 
 (function () {
   var ESC_KEYCODE = 27;
-  var createOffer = function (obj, i) {
+
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      window.card.removeActive();
+      window.card.hideArticle();
+    }
+  });
+
+  window.createOffer = function (obj, i) {
     var offerPin = document.createElement('BUTTON');
     offerPin.className = 'map__pin';
     offerPin.style.left = '' + obj[i].location.x + 'px';
@@ -21,15 +29,5 @@
     offerPin.tabIndex = 1;
     offerPin.appendChild(image);
     return offerPin;
-  };
-  document.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      window.card.removeActive();
-      window.card.hideArticle();
-    }
-  });
-
-  window.pin = {
-    createOffer: createOffer
   };
 })();
