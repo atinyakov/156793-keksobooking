@@ -731,6 +731,13 @@ textarea:focus
     width: 140px;
 }
 
+.user__pic
+{
+    display:block;
+    width: 140px;
+    float: right;
+    margin: 10px 10px 10px 20px;
+}
 .form__element--submit
 {
     width: 100%;
